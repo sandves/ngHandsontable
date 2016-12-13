@@ -5,7 +5,7 @@
  * Copyright 2015 Handsoncode sp. z o.o. <hello@handsontable.com>
  * Licensed under the MIT license.
  * https://github.com/handsontable/ngHandsontable
- * Date: Wed Oct 26 2016 10:00:05 GMT+0200 (CEST)
+ * Date: Tue Dec 13 2016 21:35:23 GMT+0100 (W. Europe Standard Time)
 */
 
 if (document.all && !document.addEventListener) { // IE 8 and lower
@@ -79,6 +79,7 @@ Handsontable.hooks.add('afterContextMenuShow', function() {
 
   function hotRegisterer() {
     var instances = {};
+    var subscriptions = {};
 
     return {
       getInstance: function(id) {
@@ -87,10 +88,17 @@ Handsontable.hooks.add('afterContextMenuShow', function() {
 
       registerInstance: function(id, instance) {
         instances[id] = instance;
+        if (id in subscriptions) {
+          subscriptions[id]();
+        }
       },
 
       removeInstance: function(id) {
         instances[id] = void 0;
+      },
+
+      subscribe: function(id, callback) {
+        subscriptions[id] = callback;
       }
     };
   }
